@@ -17,7 +17,7 @@
                  :current-page="currentPage" show-empty responsive="sm">
           <template v-slot:cell(id)="row">
             {{ row.item._id.substr(0, 8) }}
-          </template>
+          </template>2
 
           <template v-slot:cell(date)="row">
             <p v-b-tooltip.hover :title="formatDate(row.item.createdAt, 'DD/MM/YYYY HH:mm:ss')">
@@ -85,13 +85,14 @@
           <template v-slot:cell(status)="row">
             <b-badge variant="primary" v-if="row.item.status === 0">Initialisé</b-badge>
             <b-badge variant="warning" v-if="row.item.status === 1">En cours</b-badge>
-            <b-badge variant="success" v-if="row.item.status === 2">Terminé</b-badge>
-            <b-badge variant="danger" v-if="row.item.status === 3">Annulé</b-badge>
+            <b-badge variant="warning" v-if="row.item.status === 2">En attente de validation</b-badge>
+            <b-badge variant="success" v-if="row.item.status === 3">Validé</b-badge>
+            <b-badge variant="danger" v-if="row.item.status === 4">Annulé</b-badge>
           </template>
 
           <template v-slot:cell(actions)="row">
             <b-button size="sm" variant="success" class="ml-1 mr-1" v-b-tooltip.hover title="Marquer comme terminé"
-                      v-if="row.item.status === 1" @click="complete(row.item)" :disabled="isSending">
+                      v-if="row.item.status === 2" @click="complete(row.item)" :disabled="isSending">
               <b-icon-check-circle></b-icon-check-circle>
             </b-button>
 
@@ -130,7 +131,8 @@
           {key: 'cutBooster', label: 'Cut Booster'},
           {key: 'cutAdvertiser', label: 'Cut Advertiser'},
           {key: 'status', label: 'Statut'},
-          {key: 'actions', label: 'Actions'}
+          {key: 'actions', label: 'Actions'},
+          {key: 'log', label: 'Log'},
         ],
         boosts: this.boostsProvider
       }
@@ -150,7 +152,7 @@
       },
       complete (boost) {
         this.isSending = true
-
+        console.log("ICI")
         window.axios.post(`/api/boosts/${boost._id}/complete`)
           .then(() => {
             this.$refs.table.refresh()
